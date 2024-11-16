@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from routes.users import users_bp
+from imageupload import upload_image_to_cloudinary
 import sys
 import os
 
@@ -22,6 +23,19 @@ app.register_blueprint(users_bp)
 @app.route('/home')
 def home():
     return "Hello, Flask is working!"
+
+# Route for image upload
+@app.route('/upload-image', methods=['POST'])
+def upload_image():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image file provided."}), 400
+
+    image_file = request.files['image']
+    upload_response = upload_image_to_cloudinary(image_file)
+    if "error" in upload_response:
+        return jsonify({"error": upload_response["error"]}), 500
+
+    return jsonify(upload_response)
 
 # Error handling for 500 - Internal Server Error
 @app.errorhandler(500)

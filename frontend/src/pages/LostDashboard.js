@@ -6,10 +6,11 @@ const LostApp = () => {
     const [formData, setFormData] = useState({
         name: '',
         color: '',
-       
         description: '',
-        location: '', // Add location to form data
+        location: '',
+        image: '', // Add image URL to formData
     });
+    const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
     useEffect(() => {
         // Fetch and render lost items when the component is mounted
@@ -34,23 +35,59 @@ const LostApp = () => {
         });
     };
 
+    // Handle image file selection
+    const handleImageChange = (e) => {
+        setImageFile(e.target.files[0]);
+    };
+
+    // Upload the image to Cloudinary
+    const uploadImageToCloudinary = async () => {
+        if (!imageFile) {
+            alert('Please select an image to upload.');
+            return null;
+        }
+
+        const formData = new FormData();
+        formData.append('file', imageFile);
+        formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
+
+        try {
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await response.json();
+            return data.secure_url; // Get the URL of the uploaded image
+        } catch (error) {
+            console.error('Error uploading image to Cloudinary:', error);
+            return null;
+        }
+    };
+
     // Handle form submission
     const handleFormSubmission = async (event) => {
         event.preventDefault();
 
-        const { name, color,  description, location } = formData;
+        const { name, color, description, location } = formData;
 
         if (!name || !color || !description || !location) {
             alert('Please fill out all fields.');
             return;
         }
 
-        const newItem = { name, color, description, location };
+        const imageUrl = await uploadImageToCloudinary();
+        if (!imageUrl) {
+            alert('Image upload failed. Please try again.');
+            return;
+        }
+
+        const newItem = { name, color, description, location, image: imageUrl };
 
         try {
             const addedItem = await addLostItem(newItem);
             setLostItems([...lostItems, addedItem]);
-            setFormData({ name: '', color: '', description: '', location: '' });
+            setFormData({ name: '', color: '', description: '', location: '', image: '' });
+            setImageFile(null);
             alert('Item added successfully!');
         } catch (error) {
             console.error('Error adding item:', error);
@@ -85,22 +122,14 @@ const LostApp = () => {
                         required
                     /><br /><br />
 
-                    <label htmlFor="itemCategory">Category:</label><br />
-                    <select
-                        id="itemCategory"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        required
-                    >
-                        <option value="" disabled selected>Select a category</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Clothing">Clothing</option>
-                        <option value="Stationery">Stationery</option>
-                        <option value="Others">Others</option>
-                    </select><br /><br />
+                    <label htmlFor="itemImage">Upload Image:</label><br />
+                    <input
+                        type="file"
+                        id="itemImage"
+                        onChange={handleImageChange}
+                        accept="image/*"
+                    /><br /><br />
 
-                    {/* Location Dropdown placed above the Description */}
                     <label htmlFor="itemLocation">Location:</label><br />
                     <select
                         id="itemLocation"
@@ -109,7 +138,7 @@ const LostApp = () => {
                         onChange={handleInputChange}
                         required
                     >
-                        <option value="" disabled selected>Select a location</option>
+                        <option value="" disabled>Select a location</option>
                         <option value="JCK">JCK</option>
                         <option value="RFM">RFM</option>
                         <option value="Alkek Library">Alkek Library</option>
@@ -141,9 +170,15 @@ const LostApp = () => {
                             <div key={index} className="item">
                                 <p><strong>Name:</strong> {item.name}</p>
                                 <p><strong>Color:</strong> {item.color}</p>
-                               
                                 <p><strong>Description:</strong> {item.description}</p>
-                                <p><strong>Location:</strong> {item.location}</p> {/* Display location */}
+                                <p><strong>Location:</strong> {item.location}</p>
+                                {item.image && (
+                                    <img
+                                        src={item.image}
+                                        alt={item.name}
+                                        style={{ maxWidth: '200px', maxHeight: '200px' }}
+                                    />
+                                )}
                             </div>
                         ))
                     )}
