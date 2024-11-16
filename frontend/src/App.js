@@ -1,21 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import UploadImage from './UploadImage';
 
 function App() {
   return (
     <div>
       <h1>Welcome to Found It!</h1>
-      <p>This is a basic version that just works. No functionality yet!</p>
+      <UploadImage />
     </div>
   );
 }
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
 
 export default App;
