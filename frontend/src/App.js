@@ -5,6 +5,7 @@ import { Routes, Route, BrowserRouter as Router } from 'react-router-dom'; // Ad
 import axios from 'axios';
 import Login from './components/login'; 
 import Register from './components/register'; 
+import LostApp from './pages/LostDashboard'; 
 
 // Main App component
 function App() {
@@ -31,6 +32,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} /> 
         <Route path="/register" element={<Register />} />
+        <Route path="/lost_dashboard" element={<LostApp />} />
         {/* Add other routes as needed */}
       </Routes>
     </div>
