@@ -10,6 +10,14 @@ LOCKOUT_TIME_SECONDS = 1 * 60  # 5 minutes lockout
 
 users_bp = Blueprint('users', __name__)
 
+# Login status route
+@users_bp.route('/login_status', methods=['GET'])
+def login_status():
+    if 'user_id' in session:
+        return jsonify({"logged_in": True, "user_id": session['user_id']}), 200
+    else:
+        return jsonify({"logged_in": False}), 200
+    
 # Register new user
 @users_bp.route('/register', methods=['POST'])
 def register_user():
