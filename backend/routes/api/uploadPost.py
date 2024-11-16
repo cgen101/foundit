@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import sqlite3
 import os
 
-uploadImage_bp = Blueprint('uploadImage', __name__)
+uploadPost_bp = Blueprint('uploadPost', __name__)
 
 # Database configuration
 DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../database/database.db")
@@ -12,7 +12,7 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-@uploadImage_bp.route('/upload-item', methods=['POST'])
+@uploadPost_bp.route('/upload-item', methods=['POST'])
 def upload_item():
     try:
         # Get data from frontend

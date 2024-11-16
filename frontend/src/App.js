@@ -1,11 +1,11 @@
 import React from 'react';
-import UploadImage from './UploadImage';
+import PostItemForm from './components/PostItemForm';
 
 function App() {
   return (
     <div>
-      <h1>Welcome to Found It!</h1>
-      <UploadImage />
+      <h1><b>found</b>it!</h1>
+      <PostItemForm />
     </div>
   );
 }
