@@ -3,8 +3,8 @@ import os
 
 def setup_database():
     # Define the path to your database and schema file
-    database_path = 'database/findit.db'  # Update with your actual path if needed
-    schema_file_path = 'database/findit-models.sql'  # Path to your schema file
+    database_path = 'database/findit_database.db'  # Update with your actual path if needed
+    schema_file_path = 'database/findit_models.sql'  # Path to your schema file
 
     # Ensure the database directory exists
     os.makedirs(os.path.dirname(database_path), exist_ok=True)
@@ -14,20 +14,16 @@ def setup_database():
     cursor = connect.cursor()
     print("Connection to database successful!")
 
-    # Check if the 'Users' table exists
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Users';")
-    result_users = cursor.fetchone()
-
     # Check if the 'Items' table exists
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Items';")
     result_items = cursor.fetchone()
 
-    # Check if the 'Recipes' table exists
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='SavedRecipes';")
-    result_saved_recipes = cursor.fetchone()
+    # Check if the 'Users' table exists
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Users';")
+    result_users = cursor.fetchone()
 
     # If tables don't exist, apply the schema
-    if not result_users or not result_items or not result_saved_recipes:
+    if not result_items or not result_users:
         print("Applying schema to database...")
         # Read and execute the SQL commands in the schema file
         try:

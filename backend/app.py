@@ -5,7 +5,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from database.db_connection import setup_database
+from database.db_setup import setup_database
 
 # Load environment variables from .env file
 load_dotenv()
