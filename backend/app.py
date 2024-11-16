@@ -1,12 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_mail import Mail, Message
 from dotenv import load_dotenv
+import sys
 import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from database.db_connection import setup_database
 
 # Load environment variables from .env file
 load_dotenv()
+setup_database()
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
@@ -21,8 +24,6 @@ def home():
 @app.errorhandler(500)
 def internal_error(e):
     return {"error": "An internal server error occurred."}, 500
-
-# CMD ["sh", "-c", "python database/db-connection.py && flask run --host=0.0.0.0"]
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
