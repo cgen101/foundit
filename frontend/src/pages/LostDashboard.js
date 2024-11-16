@@ -6,7 +6,7 @@ const LostApp = () => {
     const [formData, setFormData] = useState({
         name: '',
         color: '',
-        category: '',
+       
         description: '',
         location: '', // Add location to form data
     });
@@ -38,19 +38,19 @@ const LostApp = () => {
     const handleFormSubmission = async (event) => {
         event.preventDefault();
 
-        const { name, color, category, description, location } = formData;
+        const { name, color,  description, location } = formData;
 
-        if (!name || !color || !category || !description || !location) {
+        if (!name || !color || !description || !location) {
             alert('Please fill out all fields.');
             return;
         }
 
-        const newItem = { name, color, category, description, location };
+        const newItem = { name, color, description, location };
 
         try {
             const addedItem = await addLostItem(newItem);
             setLostItems([...lostItems, addedItem]);
-            setFormData({ name: '', color: '', category: '', description: '', location: '' });
+            setFormData({ name: '', color: '', description: '', location: '' });
             alert('Item added successfully!');
         } catch (error) {
             console.error('Error adding item:', error);
@@ -100,16 +100,7 @@ const LostApp = () => {
                         <option value="Others">Others</option>
                     </select><br /><br />
 
-                    <label htmlFor="itemDescription">Description:</label><br />
-                    <textarea
-                        id="itemDescription"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                        rows="4"
-                        required
-                    ></textarea><br /><br />
-
+                    {/* Location Dropdown placed above the Description */}
                     <label htmlFor="itemLocation">Location:</label><br />
                     <select
                         id="itemLocation"
@@ -126,6 +117,16 @@ const LostApp = () => {
                         <option value="Other">Other</option>
                     </select><br /><br />
 
+                    <label htmlFor="itemDescription">Description:</label><br />
+                    <textarea
+                        id="itemDescription"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        rows="4"
+                        required
+                    ></textarea><br /><br />
+
                     <button type="submit">Add Item</button>
                 </form>
             </div>
@@ -140,7 +141,7 @@ const LostApp = () => {
                             <div key={index} className="item">
                                 <p><strong>Name:</strong> {item.name}</p>
                                 <p><strong>Color:</strong> {item.color}</p>
-                                <p><strong>Category:</strong> {item.category}</p>
+                               
                                 <p><strong>Description:</strong> {item.description}</p>
                                 <p><strong>Location:</strong> {item.location}</p> {/* Display location */}
                             </div>
